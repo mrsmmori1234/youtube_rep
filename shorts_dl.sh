@@ -1,28 +1,27 @@
 #!/bin/bash
 # shorts_dl.sh
-# チャンネルの Shorts 一括ダウンロード（字幕なし）
+# Batch download of Shorts from a channel (no subtitles)
 
-# 保存先のベースディレクトリ
+# Base directory for saving
 OUTBASE="/mnt/d/Youtube"
 
-# ユーザーに入力を促す
-read -p "ダウンロードするYouTube ShortsのURLを入力してください: " SHORTS_URL
+# Prompt user for input
+read -p "Enter the YouTube Shorts URL to download: " SHORTS_URL
 
-# 入力が空なら終了
+# Exit if input is empty
 if [ -z "$SHORTS_URL" ]; then
-    echo "URLが入力されていません。終了します。"
+    echo "No URL entered. Exiting."
     exit 1
 fi
 
-# yt-dlp 実行
+# Execute yt-dlp
 yt-dlp \
   --format "bestvideo+bestaudio/best" \
   --merge-output-format mp4 \
   --yes-playlist \
-  --download-archive "/home/mrsmmori/youtube/logs/shorts_downloaded.txt" \
+  --download-archive "$HOME/youtube/logs/archive.txt" \
   --no-overwrites \
   --output "$OUTBASE/%(channel)s/Shorts/%(upload_date)s - %(title)s - %(id)s.%(ext)s" \
   "$SHORTS_URL"
 
-echo "✅ Shorts ダウンロード完了しました。保存先: $OUTBASE"
-
+echo "✅ Shorts download completed. Saved to: $OUTBASE"

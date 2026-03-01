@@ -1,10 +1,10 @@
 #!/bin/bash
 # channel_mp4.sh
-# 各URLから最新2本だけダウンロード、既存はスキップ
-# 字幕は英語のみ
+# Download only the latest 2 videos from each URL, skip existing
+# Subtitles in English only
 
 OUTBASE="/mnt/d/Youtube"
-DOWNLOAD_ARCHIVE="/home/mrsmmori/youtube/logs/downloaded.txt"
+DOWNLOAD_ARCHIVE="$HOME/youtube/logs/archive.txt"
 OUTPUT_TEMPLATE="$OUTBASE/%(playlist_title)s/%(upload_date>%Y-%m-%d)s - %(title)s - %(id)s.%(ext)s"
 
 CHANNELS=(
@@ -22,7 +22,7 @@ for entry in "${CHANNELS[@]}"; do
     flag="${entry##*|}"
 
     echo "----"
-    echo "処理中: $url (subs=$flag)"
+    echo "Processing: $url (subs=$flag)"
 
     if [[ "$flag" =~ ^([yY])$ ]]; then
         SUB_OPTS=( --write-subs --write-auto-subs --sub-lang "en" --sub-format srt --convert-subs srt )
@@ -30,10 +30,10 @@ for entry in "${CHANNELS[@]}"; do
         SUB_OPTS=()
     fi
 
-    # 最新2本の動画IDを取得
+    # Get IDs of the latest 2 videos
     ids=$(yt-dlp --get-id --playlist-end 2 "$url")
 
-    # すべて既にDL済みかチェック
+    # Check if all are already downloaded
     all_downloaded=true
     for id in $ids; do
         if ! grep -q "$id" "$DOWNLOAD_ARCHIVE"; then
@@ -43,11 +43,11 @@ for entry in "${CHANNELS[@]}"; do
     done
 
     if $all_downloaded; then
-        echo "➡️ 最新2本はすでにDL済み。スキップします。"
+        echo "➡️ Latest 2 videos already downloaded. Skipping."
         continue
     fi
 
-    # DL実行
+    # Execute DL
     yt-dlp \
       --format "bestvideo+bestaudio/best" \
       --merge-output-format mp4 \
@@ -59,8 +59,7 @@ for entry in "${CHANNELS[@]}"; do
       "${SUB_OPTS[@]}" \
       "$url"
 
-    echo "完了: $url"
+    echo "Completed: $url"
 done
 
-echo "✅ 全処理完了"
-
+echo "✅ All processes completed"
