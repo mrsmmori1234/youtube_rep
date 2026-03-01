@@ -6,7 +6,6 @@ import pysrt
 import time
 
 # --- 設定 ---
-API_KEY = "1bbea39c-035b-446b-9c93-a015272097dc:fx"
 DEFAULT_PATH = "/mnt/d/Youtube/Most popular TED Talks of 2025"
 
 def convert_windows_path(win_path):
@@ -33,7 +32,7 @@ def get_target_directory():
 
 def translate_srt():
     input_dir = get_target_directory()
-    translator = deepl.Translator(API_KEY)
+    translator = deepl.Translator(DEEPL_API_KEY)
 
     # 元ファイル（.srt）を取得し、すでに翻訳済みのものは除外対象とする準備
     files = [f for f in os.listdir(input_dir) if f.endswith(".srt") and not f.endswith("_bilingual.srt")]
