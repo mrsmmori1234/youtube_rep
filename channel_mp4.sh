@@ -49,7 +49,7 @@ for entry in "${CHANNELS[@]}"; do
 
     # Execute DL
     yt-dlp \
-      --format "bestvideo+bestaudio/best" \
+      --format "bestvideo[height<=720]+bestaudio/best[height<=720]" \
       --merge-output-format mp4 \
       --download-archive "$DOWNLOAD_ARCHIVE" \
       --no-overwrites \
