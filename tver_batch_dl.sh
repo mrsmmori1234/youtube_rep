@@ -2,50 +2,31 @@
 
 # TVer batch download script (no subtitles)
 
-URL_FILE="tver_urls.txt"
-MP4_DIR=/mnt/d/TVer
-LOG_FILE="$HOME/youtube/logs/archive.txt"
+URL_FILE="/home/mrsmmori/youtube/tver_urls.txt"
+MP4_DIR="/mnt/d/TVer"
+LOG_FILE="$HOME/youtube/logs/archive.txt" # 複数のスクリプトでDL履歴を共有
 
 mkdir -p "$MP4_DIR"
 touch "$LOG_FILE"
 
 if [ ! -f "$URL_FILE" ]; then
-    echo "❌ URL list file $URL_FILE not found."
+    echo "❌ URLリストファイルが見つかりません: $URL_FILE"
     exit 1
 fi
 
-while IFS= read -r url; do
-    # Skip empty lines
-    [[ -z "$url" ]] && continue
+echo "▶️ バッチダウンロードを開始します。ダウンロード済みのファイルは高速にスキップされます。"
 
-    RAW_TITLE=$(yt-dlp --get-title "$url" 2>/dev/null)
-    SAFE_TITLE=$(echo "$RAW_TITLE" | tr -d '/\?%*:|"<>')
-    SAFE_TITLE=${SAFE_TITLE:0:50}
-    FILE_PATH="$MP4_DIR/${SAFE_TITLE}-$(yt-dlp --get-id "$url").mp4"
+# whileループを廃止し、-a (--batch-file) オプションでURLリストを直接yt-dlpに渡します。
+# これにより、yt-dlpの起動が1回で済み、大幅に高速化されます。
+# --download-archive がダウンロード済みIDを記録し、次回以降の実行時に瞬時にスキップします。
+# ファイル名の整形 (-o) もyt-dlpの機能で行い、外部コマンド呼び出しをなくします。
+yt-dlp \
+    -a "$URL_FILE" \
+    --merge-output-format mp4 \
+    --ffmpeg-location /usr/bin/ffmpeg \
+    --download-archive "$LOG_FILE" \
+    --no-overwrites \
+    --ignore-errors \
+    -o "$MP4_DIR/%(title:.50)s-%(id)s.%(ext)s"
 
-    # Check if file actually exists
-    if [ -f "$FILE_PATH" ]; then
-        echo "✅ Already saved: $FILE_PATH"
-        continue
-    fi
-
-    echo "▶️ Download started: $SAFE_TITLE"
-
-    yt-dlp \
-        --merge-output-format mp4 \
-        --ffmpeg-location /usr/bin/ffmpeg \
-        --download-archive "$LOG_FILE" \
-        -o "$MP4_DIR/${SAFE_TITLE}-%(id)s.%(ext)s" \
-        "$url"
-
-    if [ $? -eq 0 ]; then
-        echo "✅ Download completed: $SAFE_TITLE"
-    else
-        echo "❌ Download failed: $url"
-        echo "ℹ️ To check formats:"
-        echo "   yt-dlp -F \"$url\""
-    fi
-
-done < "$URL_FILE"
-
-echo "🎉 Batch download process completed."
+echo "🎉 バッチダウンロード処理が完了しました。"
