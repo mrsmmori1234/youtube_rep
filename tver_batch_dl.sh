@@ -27,6 +27,6 @@ yt-dlp \
     --download-archive "$LOG_FILE" \
     --no-overwrites \
     --ignore-errors \
-    -o "$MP4_DIR/%(title:.50)s-%(id)s.%(ext)s"
+    -o "$MP4_DIR/%(title)s.%(ext)s"
 
 echo "🎉 バッチダウンロード処理が完了しました。"
