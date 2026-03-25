@@ -10,7 +10,8 @@ DEFAULT_PATH = "/mnt/d/Youtube/Most popular TED Talks of 2025"
 
 def convert_windows_path(win_path):
     path = win_path.strip().strip('"').strip("'")
-    match = re.match(r'^([a-zA-Z]):\\(.*)', path)
+    xcde3@S@S
+    atch = re.match(r'^([a-zA-Z]):\\(.*)', path)
     if match:
         drive = match.group(1).lower()
         rest = match.group(2).replace('\\', '/')
