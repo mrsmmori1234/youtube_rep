@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python "/home/mrsmmori/youtube/speed_test.py"  # Run speed test before downloading
+#python "/home/mrsmmori/youtube/speed_test.py"  # Run speed test before downloading
 
 # TVer batch download script (no subtitles)
 

@@ -16,6 +16,17 @@ while true; do
     # Subtitle download choice
     read -p "Download subtitles too? [y/N]: " sub_choice
     sub_choice=${sub_choice,,}  # to lowercase
+    SUB_OPTS=()
+
+    if [[ "$sub_choice" == "y" ]]; then
+        # List available subtitles to help the user choose
+        echo "Checking available subtitles..."
+        yt-dlp --list-subs "$url" | grep -A 100 "Available subtitles" || echo "No subtitles found."
+
+        read -p "Enter language codes (e.g., ja, en, all) [default: ja]: " lang_choice
+        lang_choice=${lang_choice:-ja}
+        SUB_OPTS=(--write-subs --write-auto-subs --sub-langs "$lang_choice" --convert-subs srt)
+    fi
 
     RAW_TITLE=$(yt-dlp --get-title "$url")
     SAFE_TITLE=$(echo "$RAW_TITLE" | tr -d '/\?%*:|"<>')
@@ -23,40 +34,16 @@ while true; do
 
     echo "Download started: $SAFE_TITLE"
 
-    # ---------- Video Download ----------
+    # ---------- Download (Video & Subtitles) ----------
     yt-dlp -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]" \
         --merge-output-format mp4 \
         --ffmpeg-location /usr/bin/ffmpeg \
         --download-archive "$LOG_FILE" \
         -o "$MP4_DIR/${SAFE_TITLE}-%(id)s.%(ext)s" \
+        "${SUB_OPTS[@]}" \
         "$url"
 
     DL_STATUS=$?
-
-    # ---------- Subtitle Processing ----------
-    if [[ "$DL_STATUS" -eq 0 && "$sub_choice" == "y" ]]; then
-        echo "Fetching subtitles: attempting ja"
-
-        yt-dlp --skip-download \
-            --write-subs \
-            --sub-lang "ja" \
-            --convert-subs srt \
-            --ffmpeg-location /usr/bin/ffmpeg \
-            -o "$MP4_DIR/${SAFE_TITLE}-%(id)s.%(ext)s" \
-            "$url"
-
-        # If ja not found, get en
-        if ! ls "$MP4_DIR/${SAFE_TITLE}-"*".ja.srt" >/dev/null 2>&1; then
-            echo "No ja subtitles → fetching en"
-            yt-dlp --skip-download \
-                --write-subs \
-                --sub-lang "en" \
-                --convert-subs srt \
-                --ffmpeg-location /usr/bin/ffmpeg \
-                -o "$MP4_DIR/${SAFE_TITLE}-%(id)s.%(ext)s" \
-                "$url"
-        fi
-    fi
 
     # ---------- Result Processing ----------
     if [[ "$DL_STATUS" -eq 0 ]]; then
