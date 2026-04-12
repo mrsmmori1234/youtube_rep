@@ -19,13 +19,8 @@ while true; do
     SUB_OPTS=()
 
     if [[ "$sub_choice" == "y" ]]; then
-        # List available subtitles to help the user choose
-        echo "Checking available subtitles..."
-        yt-dlp --list-subs "$url" | grep -A 100 "Available subtitles" || echo "No subtitles found."
-
-        read -p "Enter language codes (e.g., ja, en, all) [default: ja]: " lang_choice
-        lang_choice=${lang_choice:-ja}
-        SUB_OPTS=(--write-subs --write-auto-subs --sub-langs "$lang_choice" --convert-subs srt)
+        echo "Fetching English subtitles..."
+        SUB_OPTS=(--write-subs --write-auto-subs --sub-langs "en" --convert-subs srt)
     fi
 
     RAW_TITLE=$(yt-dlp --get-title "$url")
@@ -48,15 +43,7 @@ while true; do
     # ---------- Result Processing ----------
     if [[ "$DL_STATUS" -eq 0 ]]; then
         echo "✅ Download completed: $SAFE_TITLE"
-
-        if [[ "$sub_choice" == "y" ]]; then
-            if ls "$MP4_DIR/${SAFE_TITLE}-"*.srt &>/dev/null; then
-                echo "Subtitles fetched:"
-                ls "$MP4_DIR/${SAFE_TITLE}-"*.srt
-            else
-                echo "⚠️ Could not fetch subtitles."
-            fi
-        fi
+        [[ "$sub_choice" == "y" ]] && echo "Subtitles (en) processed if available."
     else
         echo "❌ Download failed: $url"
     fi
