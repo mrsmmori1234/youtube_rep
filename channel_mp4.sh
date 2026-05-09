@@ -11,7 +11,6 @@ CHANNELS=(
   "https://www.youtube.com/@ShigeTravel/videos|n"
   "https://www.youtube.com/@BappaShota/videos|n"
   "https://www.youtube.com/@iketomo-ch/videos|n"
-  "https://www.youtube.com/@ai_masaou/videos|n"
 )
 
 mkdir -p "$OUTBASE"
