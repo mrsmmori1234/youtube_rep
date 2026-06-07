@@ -4,6 +4,10 @@
 
 # Base directory for saving
 OUTBASE="/mnt/d/Youtube"
+LOG_FILE="$HOME/youtube/logs/archive.txt"
+
+mkdir -p "$(dirname "$LOG_FILE")"
+touch "$LOG_FILE"
 
 # Prompt user for input
 read -p "Enter the YouTube Shorts URL to download: " SHORTS_URL
@@ -19,7 +23,7 @@ yt-dlp \
   --format "bestvideo+bestaudio/best" \
   --merge-output-format mp4 \
   --yes-playlist \
-  --download-archive "$HOME/youtube/logs/archive.txt" \
+  --download-archive "$LOG_FILE" \
   --no-overwrites \
   --output "$OUTBASE/%(channel)s/Shorts/%(upload_date)s - %(title)s - %(id)s.%(ext)s" \
   "$SHORTS_URL"

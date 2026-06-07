@@ -2,6 +2,10 @@
 # playlist_dl.sh
 
 OUTBASE="/mnt/d/Youtube"
+LOG_FILE="$HOME/youtube/logs/archive.txt"
+
+mkdir -p "$(dirname "$LOG_FILE")"
+touch "$LOG_FILE"
 
 read -p "Please enter the YouTube playlist or channel URL to download: " PLAYLIST_URL
 if [ -z "$PLAYLIST_URL" ]; then
@@ -43,7 +47,7 @@ yt-dlp \
   --match-filter "!is_live" \
   $SORT_OPTS \
   $RANGE_OPTS \
-  --download-archive "$HOME/youtube/logs/archive.txt" \
+  --download-archive "$LOG_FILE" \
   --no-overwrites \
   --output "$OUTBASE/%(uploader)s/%(title)s - %(id)s.%(ext)s" \
   $SUB_OPTS \
