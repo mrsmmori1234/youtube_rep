@@ -34,7 +34,7 @@ fi
 read -p "Download subtitles as well? (y/n): " SUB_CHOICE
 SUB_OPTS=""
 if [[ "$SUB_CHOICE" == "y" || "$SUB_CHOICE" == "Y" ]]; then
-    SUB_OPTS="--write-subs --write-auto-subs --sub-langs ja,en --sub-format srt"
+    SUB_OPTS="--write-subs --write-auto-subs --sub-langs ja,en --sub-format srt --embed-subs"
 fi
 
 # Execute

@@ -24,7 +24,7 @@ for entry in "${CHANNELS[@]}"; do
     echo "Processing: $url (subs=$flag)"
 
     if [[ "$flag" =~ ^([yY])$ ]]; then
-        SUB_OPTS=( --write-subs --write-auto-subs --sub-lang "en" --sub-format srt --convert-subs srt )
+        SUB_OPTS=( --write-subs --write-auto-subs --sub-lang "en" --sub-format srt --convert-subs srt --embed-subs )
     else
         SUB_OPTS=()
     fi
