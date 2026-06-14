@@ -77,12 +77,6 @@ def fetch_favorites_from_browser():
 
         print("🚀 Chromeを起動して、お気に入りページに移動します...")
         page.goto("https://tver.jp/mypage/fav")
-        try:
-            # ネットワーク遅延やVPN経由のアクセスを考慮し、タイムアウトを60秒に延長してDOM読み込み時点で復帰させます
-            page.goto("https://tver.jp/mypage/fav", timeout=60000, wait_until="domcontentloaded")
-        except Exception:
-            print("⚠️ ページの読み込みでタイムアウトが発生しました。")
-            print("※TVerは日本国外からのアクセスを制限しています。シンガポールから接続している場合はVPN等を確認してください。")
 
         print("\n⏳ ページが完全に読み込まれ、動画リストが表示されるまで待機してください。")
         print("💡 ログインが必要な場合はブラウザ側でログインを完了させてください。")

@@ -6,15 +6,18 @@
 OUTBASE="/mnt/d/Youtube"
 DOWNLOAD_ARCHIVE="$HOME/youtube/logs/archive.txt"
 OUTPUT_TEMPLATE="$OUTBASE/%(playlist_title)s/%(upload_date>%Y-%m-%d)s - %(title)s - %(id)s.%(ext)s"
+CHANNEL_LIST="$HOME/youtube/channels.txt"
 
-CHANNELS=(
-  "https://www.youtube.com/@ShigeTravel/videos|n"
-  "https://www.youtube.com/@BappaShota/videos|n"
-  "https://www.youtube.com/@iketomo-ch/videos|n"
-)
+if [ ! -f "$CHANNEL_LIST" ]; then
+    echo "❌ Error: Channel list file not found: $CHANNEL_LIST"
+    exit 1
+fi
 
 mkdir -p "$OUTBASE"
 touch "$DOWNLOAD_ARCHIVE"
+
+# Read from file, ignoring comments (#) and empty lines
+mapfile -t CHANNELS < <(grep -v -E '^\s*#|^\s*$' "$CHANNEL_LIST")
 
 for entry in "${CHANNELS[@]}"; do
     url="${entry%%|*}"
