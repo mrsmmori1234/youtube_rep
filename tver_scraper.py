@@ -76,7 +76,13 @@ def fetch_favorites_from_browser():
         page = context.new_page()
 
         print("🚀 Chromeを起動して、お気に入りページに移動します...")
-        page.goto("https://tver.jp/mypage/fav")
+        try:
+            # タイムアウト時間を延長し、判定を domcontentloaded に緩和します
+            page.goto("https://tver.jp/mypage/fav", timeout=60000, wait_until="domcontentloaded")
+        except Exception as e:
+            print(f"⚠️ ページの読み込み中にエラーが発生しました: {e}")
+            print("※日本国外（シンガポール等）からのアクセスの場合はVPNが必要です。")
+            return []
 
         print("\n⏳ ページが完全に読み込まれ、動画リストが表示されるまで待機してください。")
         print("💡 ログインが必要な場合はブラウザ側でログインを完了させてください。")
