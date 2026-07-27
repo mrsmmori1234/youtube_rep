@@ -24,6 +24,9 @@ fi
 
 # Execute yt-dlp (画質上限を720pに制限し、mp4互換で高速結合)
 yt-dlp \
+  --sleep-requests 1 \
+  --sleep-interval 1 \
+  --max-sleep-interval 10 \
   --format "bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best[height<=720][ext=mp4]/best" \
   --merge-output-format mp4 \
   --yes-playlist \
