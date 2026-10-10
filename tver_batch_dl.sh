@@ -18,10 +18,8 @@ fi
 
 echo "▶️ Starting batch download. Previously downloaded files will be skipped."
 
-# Replaced while loop with -a (--batch-file) option to pass the URL list directly to yt-dlp.
-# This runs yt-dlp once, significantly improving performance.
-# --download-archive records downloaded IDs for instant skipping in future runs.
-# Filename formatting (-o) is handled internally by yt-dlp, removing the need for external tools.
+# - Limit title to 50 characters to prevent sub-stream .ytdl files from exceeding Linux 255-byte limit
+# - Replaced raw title with ID + truncated title for cleaner, collision-safe filenames
 yt-dlp \
     -a "$URL_FILE" \
     --merge-output-format mp4 \
@@ -29,6 +27,6 @@ yt-dlp \
     --download-archive "$LOG_FILE" \
     --no-overwrites \
     --ignore-errors \
-    -o "$MP4_DIR/%(title)s.%(ext)s"
+    -o "$MP4_DIR/%(id)s_%(title).50s.%(ext)s"
 
 echo "🎉 Batch download process completed."
